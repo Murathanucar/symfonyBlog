@@ -3,6 +3,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\Form\UserType;
+use AppBundle\Service\newActionService;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
@@ -40,20 +43,15 @@ class UserController extends Controller
     public function newAction(Request $request)
     {
         $user = new User();
-        $form = $this->createForm('AppBundle\Form\UserType', $user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-
-            return $this->redirectToRoute('user_show', array('id' => $user->getId()));
+        /** @var NewActionService $newActionService */
+        $newActionService = $this->get("newaction_service");
+        $response = $newActionService->actionService(UserType::class, $user, $this->generateUrl('user_index'));
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
-
-        return $this->render('user/new.html.twig', array(
+        return $this->render( 'user/new.html.twig', array(
             'user' => $user,
-            'form' => $form->createView(),
+            'form' => $newActionService->getForm()->createView(),
         ));
     }
 

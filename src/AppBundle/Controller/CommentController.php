@@ -2,7 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Service\newActionService;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use AppBundle\Entity\Comment;
+use AppBundle\Form\CommentType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
@@ -40,20 +43,15 @@ class CommentController extends Controller
     public function newAction(Request $request)
     {
         $comment = new Comment();
-        $form = $this->createForm('AppBundle\Form\CommentType', $comment);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($comment);
-            $em->flush();
-
-            return $this->redirectToRoute('comment_show', array('id' => $comment->getId()));
+        /** @var NewActionService $newActionService */
+        $newActionService = $this->get("newaction_service");
+        $response = $newActionService->actionService(CommentType::class, $comment, $this->generateUrl('comment_index'));
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
-
-        return $this->render('comment/new.html.twig', array(
+        return $this->render( 'comment/new.html.twig', array(
             'comment' => $comment,
-            'form' => $form->createView(),
+            'form' => $newActionService->getForm()->createView(),
         ));
     }
 
