@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2c89117f-4bd7-4360-a92b-f1e6e39414fd" name="Default" comment="" />
+    <list default="true" id="2c89117f-4bd7-4360-a92b-f1e6e39414fd" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -61,7 +63,7 @@
           <file leaf-file-name="NewActionService.php" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/AppBundle/Service/NewActionService.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="0">
+                <state relative-caret-position="702">
                   <caret line="39" column="63" lean-forward="false" selection-start-line="39" selection-start-column="63" selection-end-line="39" selection-end-column="63" />
                   <folding>
                     <element signature="e#6#90#0#PHP" expanded="true" />
@@ -78,10 +80,11 @@
           <file leaf-file-name="ArticleController.php" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/ArticleController.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="299">
+                <state relative-caret-position="-1263">
                   <caret line="56" column="5" lean-forward="false" selection-start-line="56" selection-start-column="5" selection-end-line="56" selection-end-column="5" />
                   <folding>
                     <element signature="e#40#69#0#PHP" expanded="true" />
+                    <element signature="e#774#793#1#PHP" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -130,13 +133,13 @@
         <option value="$PROJECT_DIR$/app/Resources/views/article/index.html.twig" />
         <option value="$PROJECT_DIR$/src/AppBundle/Services/NewActionService.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Service/newActionService.php" />
-        <option value="$PROJECT_DIR$/src/AppBundle/Controller/ArticleController.php" />
         <option value="$PROJECT_DIR$/app/config/services.yml" />
         <option value="$PROJECT_DIR$/src/AppBundle/Controller/CategoryController.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Controller/MemberController.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Controller/UserController.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Service/NewActionService.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Controller/CommentController.php" />
+        <option value="$PROJECT_DIR$/src/AppBundle/Controller/ArticleController.php" />
       </list>
     </option>
   </component>
@@ -338,15 +341,16 @@
       <workItem from="1503990548816" duration="5000" />
       <workItem from="1503990647565" duration="4698000" />
       <workItem from="1504006012375" duration="7359000" />
-      <workItem from="1504680148948" duration="599000" />
+      <workItem from="1504680148948" duration="600000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="101431000" />
+    <option name="totallyTimeSpent" value="101432000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="13" y="-4" width="1303" height="780" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23597233" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -742,8 +746,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/ArticleController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="56" column="5" lean-forward="false" selection-start-line="56" selection-start-column="5" selection-end-line="56" selection-end-column="5" />
+        <state relative-caret-position="774">
+          <caret line="50" column="29" lean-forward="false" selection-start-line="50" selection-start-column="29" selection-end-line="50" selection-end-column="29" />
           <folding>
             <element signature="e#40#69#0#PHP" expanded="true" />
           </folding>
@@ -752,7 +756,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/AppBundle/Service/NewActionService.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
+        <state relative-caret-position="702">
           <caret line="39" column="63" lean-forward="false" selection-start-line="39" selection-start-column="63" selection-end-line="39" selection-end-column="63" />
           <folding>
             <element signature="e#6#90#0#PHP" expanded="true" />
