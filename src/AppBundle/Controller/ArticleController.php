@@ -3,9 +3,12 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Article;
+use AppBundle\Form\ArticleType;
+use AppBundle\Service\newActionService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -38,23 +41,18 @@ class ArticleController extends Controller
      * @Route("/new", name="article_new")
      * @Method({"GET", "POST"})
      */
-    public function newAction(Request $request)
+    public function newAction()
     {
         $article = new Article();
-        $form = $this->createForm('AppBundle\Form\ArticleType', $article);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($article);
-            $em->flush();
-
-            return $this->redirectToRoute('article_show', array('id' => $article->getId()));
+        /** @var NewActionService $newActionService */
+        $newActionService = $this->get("newaction_service");
+        $response = $newActionService->actionService(ArticleType::class, $article, $this->generateUrl('article_index'));
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
-
-        return $this->render('article/new.html.twig', array(
+        return $this->render( 'article/new.html.twig', array(
             'article' => $article,
-            'form' => $form->createView(),
+            'form' => $newActionService->getForm()->createView(),
         ));
     }
 

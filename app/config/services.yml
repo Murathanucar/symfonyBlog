@@ -4,6 +4,7 @@ parameters:
     #parameter_name: value
 
 services:
+
     # default configuration for services in *this* file
     _defaults:
         # automatically injects dependencies in your services
@@ -28,6 +29,14 @@ services:
         resource: '../../src/AppBundle/Controller'
         public: true
         tags: ['controller.service_arguments']
+
+    redirect_response:
+        class: Symfony\Component\HttpFoundation\RedirectResponse
+        arguments: ['/']
+
+    newaction_service:
+        class: AppBundle\Service\NewActionService
+        public: true
 
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:

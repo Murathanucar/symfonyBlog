@@ -3,6 +3,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Member;
+use AppBundle\Form\MemberType;
+use AppBundle\Service\newActionService;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
@@ -40,20 +43,15 @@ class MemberController extends Controller
     public function newAction(Request $request)
     {
         $member = new Member();
-        $form = $this->createForm('AppBundle\Form\MemberType', $member);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($member);
-            $em->flush();
-
-            return $this->redirectToRoute('member_show', array('id' => $member->getId()));
+        /** @var NewActionService $newActionService */
+        $newActionService = $this->get("newaction_service");
+        $response = $newActionService->actionService(MemberType::class, $member, $this->generateUrl('member_index'));
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
-
-        return $this->render('member/new.html.twig', array(
+        return $this->render( 'member/new.html.twig', array(
             'member' => $member,
-            'form' => $form->createView(),
+            'form' => $newActionService->getForm()->createView(),
         ));
     }
 

@@ -2,7 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Service\newActionService;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use AppBundle\Entity\Category;
+use AppBundle\Form\CategoryType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
@@ -40,20 +43,15 @@ class CategoryController extends Controller
     public function newAction(Request $request)
     {
         $category = new Category();
-        $form = $this->createForm('AppBundle\Form\CategoryType', $category);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($category);
-            $em->flush();
-
-            return $this->redirectToRoute('category_show', array('id' => $category->getId()));
+        /** @var NewActionService $newActionService */
+        $newActionService = $this->get("newaction_service");
+        $response = $newActionService->actionService(CategoryType::class, $category, $this->generateUrl('category_index'));
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
-
-        return $this->render('category/new.html.twig', array(
+        return $this->render( 'category/new.html.twig', array(
             'category' => $category,
-            'form' => $form->createView(),
+            'form' => $newActionService->getForm()->createView(),
         ));
     }
 
