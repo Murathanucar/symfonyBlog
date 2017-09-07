@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Category;
 use AppBundle\Service\newActionService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use AppBundle\Entity\Comment;
@@ -77,21 +78,23 @@ class CommentController extends Controller
      * @Route("/{id}/edit", name="comment_edit")
      * @Method({"GET", "POST"})
      */
-    public function editAction(Request $request, Comment $comment)
+    public function editAction($id = 0)
     {
+        /** @var Comment $comment */
+        $comment = $this->getDoctrine()->getManager()->getReference("AppBundle:Comment", $id);
+
         $deleteForm = $this->createDeleteForm($comment);
-        $editForm = $this->createForm('AppBundle\Form\CommentType', $comment);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('comment_edit', array('id' => $comment->getId()));
+        /** @var EditActionService $editActionService */
+        $editActionService = $this->get("editaction_service");
+        $response = $editActionService->editService(CommentType::class, $comment, $this->generateUrl('comment_edit', array('id' => $comment->getId())));
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
+
 
         return $this->render('comment/edit.html.twig', array(
             'comment' => $comment,
-            'edit_form' => $editForm->createView(),
+            'edit_form' => $editActionService->getForm()->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }

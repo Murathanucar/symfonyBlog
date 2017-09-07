@@ -38,6 +38,10 @@ services:
         class: AppBundle\Service\NewActionService
         public: true
 
+    editaction_service:
+        class: AppBundle\Service\EditActionService
+        public: true
+
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:
     #     arguments:
