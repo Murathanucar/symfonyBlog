@@ -77,21 +77,23 @@ class MemberController extends Controller
      * @Route("/{id}/edit", name="member_edit")
      * @Method({"GET", "POST"})
      */
-    public function editAction(Request $request, Member $member)
+    public function editAction($id = 0)
     {
+        /** @var Member $member */
+        $member = $this->getDoctrine()->getManager()->getReference("AppBundle:Member", $id);
+
         $deleteForm = $this->createDeleteForm($member);
-        $editForm = $this->createForm('AppBundle\Form\MemberType', $member);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('member_edit', array('id' => $member->getId()));
+        /** @var EditActionService $editActionService */
+        $editActionService = $this->get("editaction_service");
+        $response = $editActionService->editService(MemberType::class, $member, $this->generateUrl('member_edit', array('id' => $member->getId())));
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
+
 
         return $this->render('member/edit.html.twig', array(
             'member' => $member,
-            'edit_form' => $editForm->createView(),
+            'edit_form' => $editActionService->getForm()->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }

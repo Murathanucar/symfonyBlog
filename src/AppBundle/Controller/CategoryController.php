@@ -77,21 +77,23 @@ class CategoryController extends Controller
      * @Route("/{id}/edit", name="category_edit")
      * @Method({"GET", "POST"})
      */
-    public function editAction(Request $request, Category $category)
+    public function editAction($id = 0)
     {
+        /** @var Category $cateogry */
+        $category = $this->getDoctrine()->getManager()->getReference("AppBundle:Category", $id);
+
         $deleteForm = $this->createDeleteForm($category);
-        $editForm = $this->createForm('AppBundle\Form\CategoryType', $category);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('category_edit', array('id' => $category->getId()));
+        /** @var EditActionService $editActionService */
+        $editActionService = $this->get("editaction_service");
+        $response = $editActionService->editService(CategoryType::class, $category, $this->generateUrl('category_edit', array('id' => $category->getId())));
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
+
 
         return $this->render('category/edit.html.twig', array(
             'category' => $category,
-            'edit_form' => $editForm->createView(),
+            'edit_form' => $editActionService->getForm()->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }

@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Article;
 use AppBundle\Form\ArticleType;
+use AppBundle\Service\editActionService;
 use AppBundle\Service\newActionService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -75,24 +76,26 @@ class ArticleController extends Controller
     /**
      * Displays a form to edit an existing article entity.
      *
-     * @Route("/{id}/edit", name="article_edit")
+     * @Route("/{id}/edit", name="article_edit",defaults={"page"=1})
      * @Method({"GET", "POST"})
      */
-    public function editAction(Request $request, Article $article)
+    public function editAction($id = 0)
     {
+        /** @var Article $article */
+        $article = $this->getDoctrine()->getManager()->getReference("AppBundle:Article", $id);
+
         $deleteForm = $this->createDeleteForm($article);
-        $editForm = $this->createForm('AppBundle\Form\ArticleType', $article);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('article_edit', array('id' => $article->getId()));
+        /** @var EditActionService $editActionService */
+        $editActionService = $this->get("editaction_service");
+        $response = $editActionService->editService(ArticleType::class, $article, $this->generateUrl('article_edit', array('id' => $article->getId())));
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
+
 
         return $this->render('article/edit.html.twig', array(
             'article' => $article,
-            'edit_form' => $editForm->createView(),
+            'edit_form' => $editActionService->getForm()->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }

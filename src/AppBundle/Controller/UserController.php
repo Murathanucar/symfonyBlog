@@ -77,21 +77,23 @@ class UserController extends Controller
      * @Route("/{id}/edit", name="user_edit")
      * @Method({"GET", "POST"})
      */
-    public function editAction(Request $request, User $user)
+    public function editAction($id = 0)
     {
+        /** @var User $user */
+        $user = $this->getDoctrine()->getManager()->getReference("AppBundle:User", $id);
+
         $deleteForm = $this->createDeleteForm($user);
-        $editForm = $this->createForm('AppBundle\Form\UserType', $user);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('user_edit', array('id' => $user->getId()));
+        /** @var EditActionService $editActionService */
+        $editActionService = $this->get("editaction_service");
+        $response = $editActionService->editService(UserType::class, $user, $this->generateUrl('user_edit', array('id' => $user->getId())));
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
+
 
         return $this->render('user/edit.html.twig', array(
             'user' => $user,
-            'edit_form' => $editForm->createView(),
+            'edit_form' => $editActionService->getForm()->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
