@@ -8,7 +8,13 @@ use AppBundle\Entity\Category;
 use AppBundle\Form\CategoryType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Service\CreateDeleteForm;
+use AppBundle\Service\DeleteActionService;
+use AppBundle\Service\editActionService;
+
+
 
 /**
  * Category controller.
@@ -63,7 +69,9 @@ class CategoryController extends Controller
      */
     public function showAction(Category $category)
     {
-        $deleteForm = $this->createDeleteForm($category);
+        /** @var CreateDeleteForm $createDeleteForm */
+        $createDeleteForm = $this->get("createdeleteform_service");
+        $deleteForm = $createDeleteForm->createDeleteForm($category,'category_delete');
 
         return $this->render('category/show.html.twig', array(
             'category' => $category,
@@ -79,10 +87,12 @@ class CategoryController extends Controller
      */
     public function editAction($id = 0)
     {
-        /** @var Category $cateogry */
+        /** @var Category $category */
         $category = $this->getDoctrine()->getManager()->getReference("AppBundle:Category", $id);
+        /** @var CreateDeleteForm $createDeleteForm */
+        $createDeleteForm = $this->get("createdeleteform_service");
+        $deleteForm = $createDeleteForm->createDeleteForm($category,'category_delete');
 
-        $deleteForm = $this->createDeleteForm($category);
         /** @var EditActionService $editActionService */
         $editActionService = $this->get("editaction_service");
         $response = $editActionService->editService(CategoryType::class, $category, $this->generateUrl('category_edit', array('id' => $category->getId())));
@@ -104,32 +114,16 @@ class CategoryController extends Controller
      * @Route("/{id}", name="category_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, Category $category)
+    public function deleteAction(Category $category)
     {
-        $form = $this->createDeleteForm($category);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($category);
-            $em->flush();
+        /** @var DeleteActionService $deleteActionService */
+        $deleteActionService = $this->get("deleteaction_service");
+        $response = $deleteActionService->deleteService($category,$this->generateUrl('category_index'),'category_delete');
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
-
         return $this->redirectToRoute('category_index');
     }
 
-    /**
-     * Creates a form to delete a category entity.
-     *
-     * @param Category $category The category entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(Category $category)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('category_delete', array('id' => $category->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
-    }
+
 }

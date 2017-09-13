@@ -14,7 +14,7 @@ class CommentType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('articleId', EntityType::class, array(
+        $builder->add('article', EntityType::class, array(
             'class' => 'AppBundle:Article',
             'choice_label' => 'description',
             ))

@@ -4,6 +4,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Article;
 use AppBundle\Form\ArticleType;
+use AppBundle\Service\CreateDeleteForm;
+use AppBundle\Service\DeleteActionService;
 use AppBundle\Service\editActionService;
 use AppBundle\Service\newActionService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -64,6 +66,7 @@ class ArticleController extends Controller
      */
     public function showAction(Article $article)
     {
+        /** @var CreateDeleteForm $createDeleteForm */
         $createDeleteForm = $this->get("createdeleteform_service");
         $deleteForm = $createDeleteForm->createDeleteForm($article,'article_delete');
 
@@ -83,6 +86,7 @@ class ArticleController extends Controller
     {
         /** @var Article $article */
         $article = $this->getDoctrine()->getManager()->getReference("AppBundle:Article", $id);
+        /** @var CreateDeleteForm $createDeleteForm */
         $createDeleteForm = $this->get("createdeleteform_service");
         $deleteForm = $createDeleteForm->createDeleteForm($article,'article_delete');
 
@@ -109,7 +113,7 @@ class ArticleController extends Controller
      */
     public function deleteAction(Article $article)
     {
-
+        /** @var DeleteActionService $deleteActionService */
         $deleteActionService = $this->get("deleteaction_service");
         $response = $deleteActionService->deleteService($article,$this->generateUrl('article_index'),'article_delete');
         if($response instanceof RedirectResponse ){

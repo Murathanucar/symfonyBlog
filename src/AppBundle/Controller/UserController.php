@@ -8,7 +8,11 @@ use AppBundle\Service\newActionService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Service\CreateDeleteForm;
+use AppBundle\Service\DeleteActionService;
+use AppBundle\Service\editActionService;
 
 /**
  * User controller.
@@ -39,8 +43,9 @@ class UserController extends Controller
      *
      * @Route("/new", name="user_new")
      * @Method({"GET", "POST"})
+     * @return null|RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction(Request $request)
+    public function newAction()
     {
         $user = new User();
         /** @var NewActionService $newActionService */
@@ -63,8 +68,9 @@ class UserController extends Controller
      */
     public function showAction(User $user)
     {
-        $deleteForm = $this->createDeleteForm($user);
-
+        /** @var CreateDeleteForm $createDeleteForm */
+        $createDeleteForm = $this->get("createdeleteform_service");
+        $deleteForm = $createDeleteForm->createDeleteForm($user,'user_delete');
         return $this->render('user/show.html.twig', array(
             'user' => $user,
             'delete_form' => $deleteForm->createView(),
@@ -81,8 +87,10 @@ class UserController extends Controller
     {
         /** @var User $user */
         $user = $this->getDoctrine()->getManager()->getReference("AppBundle:User", $id);
+        /** @var CreateDeleteForm $createDeleteForm */
+        $createDeleteForm = $this->get("createdeleteform_service");
+        $deleteForm = $createDeleteForm->createDeleteForm($user,'user_delete');
 
-        $deleteForm = $this->createDeleteForm($user);
         /** @var EditActionService $editActionService */
         $editActionService = $this->get("editaction_service");
         $response = $editActionService->editService(UserType::class, $user, $this->generateUrl('user_edit', array('id' => $user->getId())));
@@ -103,34 +111,18 @@ class UserController extends Controller
      *
      * @Route("/{id}", name="user_delete")
      * @Method("DELETE")
+     * @param User $user
+     * @return null|RedirectResponse
      */
-    public function deleteAction(Request $request, User $user)
+    public function deleteAction(User $user)
     {
-        $form = $this->createDeleteForm($user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($user);
-            $em->flush();
+        /** @var DeleteActionService $deleteActionService */
+        $deleteActionService = $this->get("deleteaction_service");
+        $response = $deleteActionService->deleteService($user,$this->generateUrl('user_index'),'user_delete');
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
-
         return $this->redirectToRoute('user_index');
     }
 
-    /**
-     * Creates a form to delete a user entity.
-     *
-     * @param User $user The user entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(User $user)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('user_delete', array('id' => $user->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
-    }
 }

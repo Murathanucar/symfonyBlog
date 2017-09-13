@@ -8,8 +8,11 @@ use AppBundle\Service\newActionService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Service\CreateDeleteForm;
+use AppBundle\Service\DeleteActionService;
+use AppBundle\Service\editActionService;
 /**
  * Member controller.
  *
@@ -63,7 +66,9 @@ class MemberController extends Controller
      */
     public function showAction(Member $member)
     {
-        $deleteForm = $this->createDeleteForm($member);
+        /** @var CreateDeleteForm $createDeleteForm */
+        $createDeleteForm = $this->get("createdeleteform_service");
+        $deleteForm = $createDeleteForm->createDeleteForm($member,'member_delete');
 
         return $this->render('member/show.html.twig', array(
             'member' => $member,
@@ -81,8 +86,10 @@ class MemberController extends Controller
     {
         /** @var Member $member */
         $member = $this->getDoctrine()->getManager()->getReference("AppBundle:Member", $id);
+        /** @var CreateDeleteForm $createDeleteForm */
+        $createDeleteForm = $this->get("createdeleteform_service");
+        $deleteForm = $createDeleteForm->createDeleteForm($member,'member_delete');
 
-        $deleteForm = $this->createDeleteForm($member);
         /** @var EditActionService $editActionService */
         $editActionService = $this->get("editaction_service");
         $response = $editActionService->editService(MemberType::class, $member, $this->generateUrl('member_edit', array('id' => $member->getId())));
@@ -104,33 +111,15 @@ class MemberController extends Controller
      * @Route("/{id}", name="member_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, Member $member)
+    public function deleteAction(Member $member)
     {
-        $form = $this->createDeleteForm($member);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($member);
-            $em->flush();
+        /** @var DeleteActionService $deleteActionService */
+        $deleteActionService = $this->get("deleteaction_service");
+        $response = $deleteActionService->deleteService($member,$this->generateUrl('member_index'),'member_delete');
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
-
         return $this->redirectToRoute('member_index');
     }
 
-    /**
-     * Creates a form to delete a member entity.
-     *
-     * @param Member $member The member entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(Member $member)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('member_delete', array('id' => $member->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
-    }
 }
