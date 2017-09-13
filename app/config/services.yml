@@ -42,6 +42,14 @@ services:
         class: AppBundle\Service\EditActionService
         public: true
 
+    deleteaction_service:
+            class: AppBundle\Service\DeleteActionService
+            public: true
+
+    createdeleteform_service:
+            class: AppBundle\Service\CreateDeleteForm
+            public: true
+
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:
     #     arguments:

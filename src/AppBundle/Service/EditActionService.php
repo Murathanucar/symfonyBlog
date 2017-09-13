@@ -50,7 +50,8 @@ class EditActionService
 
         $this->form->handleRequest($this->request);
 
-        if($this->form->isSubmitted() && $this->form->isValid()){
+        if($this->form->isSubmitted() && $this->form->isValid())
+        {
             $this->em->flush();
 
             $this->response->setTargetUrl($redirectUrl);

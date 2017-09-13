@@ -10,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Article controller.
@@ -65,7 +64,8 @@ class ArticleController extends Controller
      */
     public function showAction(Article $article)
     {
-        $deleteForm = $this->createDeleteForm($article);
+        $createDeleteForm = $this->get("createdeleteform_service");
+        $deleteForm = $createDeleteForm->createDeleteForm($article,'article_delete');
 
         return $this->render('article/show.html.twig', array(
             'article' => $article,
@@ -83,8 +83,9 @@ class ArticleController extends Controller
     {
         /** @var Article $article */
         $article = $this->getDoctrine()->getManager()->getReference("AppBundle:Article", $id);
+        $createDeleteForm = $this->get("createdeleteform_service");
+        $deleteForm = $createDeleteForm->createDeleteForm($article,'article_delete');
 
-        $deleteForm = $this->createDeleteForm($article);
         /** @var EditActionService $editActionService */
         $editActionService = $this->get("editaction_service");
         $response = $editActionService->editService(ArticleType::class, $article, $this->generateUrl('article_edit', array('id' => $article->getId())));
@@ -106,33 +107,15 @@ class ArticleController extends Controller
      * @Route("/{id}", name="article_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, Article $article)
+    public function deleteAction(Article $article)
     {
-        $form = $this->createDeleteForm($article);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($article);
-            $em->flush();
+        $deleteActionService = $this->get("deleteaction_service");
+        $response = $deleteActionService->deleteService($article,$this->generateUrl('article_index'),'article_delete');
+        if($response instanceof RedirectResponse ){
+            return $response;
         }
-
         return $this->redirectToRoute('article_index');
     }
 
-    /**
-     * Creates a form to delete a article entity.
-     *
-     * @param Article $article The article entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(Article $article)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('article_delete', array('id' => $article->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
-    }
 }
