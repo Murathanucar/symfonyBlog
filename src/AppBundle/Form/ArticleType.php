@@ -24,9 +24,9 @@ class ArticleType extends AbstractType
             ->add('description')
             ->add('fileId')
             ->add('status')
-            ->add('user', EntityType::class, array(
+            ->add('username', EntityType::class, array(
                 'class' => 'AppBundle:User',
-                'choice_label' => 'name',
+                'choice_label' => 'username',
             ));
     }
     

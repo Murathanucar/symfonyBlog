@@ -2,8 +2,7 @@
 
 {% block body %}
     <h1>Articles list</h1>
-
-    <table>
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Id</th>
@@ -29,15 +28,15 @@
                 <td>{{ article.description }}</td>
                 <td>{{ article.fileId }}</td>
                 <td>{{ article.status }}</td>
-                <td>{{ article.user.name }}</td>
+                <td>{{ article.username.username}}</td>
                 <td>
                     <ul>
-                        <li>
-                            <a href="{{ path('article_show', { 'id': article.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('article_edit', { 'id': article.id }) }}">edit</a>
-                        </li>
+                            <form action="{{ path('article_show', {'id': article.id}) }}">
+                                <button class="btn btn-info">show</button>
+                            </form>
+                            <form action="{{ path('article_edit', {'id': article.id}) }}">
+                                <button class="btn btn-info">edit</button>
+                            </form>
                     </ul>
                 </td>
             </tr>
@@ -45,9 +44,7 @@
         </tbody>
     </table>
 
-    <ul>
-        <li>
-            <a href="{{ path('article_new') }}">Create a new article</a>
-        </li>
-    </ul>
+    <form action="{{ path('article_new') }}" method="POST">
+        <button class="btn btn-info" type="submit">Create new article</button>
+    </form>
 {% endblock %}

@@ -1,16 +1,19 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+<form action="{{ path('article_index') }}" method="GET">
+<div>
+    <button type="submit" class="btn btn-warning">Back to the list</button>
+</div>
+</form>
+<div class="col-md-6">
     <h1>Article creation</h1>
-
     {{ form_start(form) }}
         {{ form_widget(form) }}
-        <input type="submit" value="Create" />
+        <input class="btn btn-success" type="submit" value="Create" />
     {{ form_end(form) }}
+</div>
 
-    <ul>
-        <li>
-            <a href="{{ path('article_index') }}">Back to the list</a>
-        </li>
-    </ul>
 {% endblock %}
+
+

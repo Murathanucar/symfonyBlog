@@ -1,9 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Article</h1>
+    <form action="{{ path('article_index') }}" method="GET">
+        <div>
+            <button type="submit" class="btn btn-warning">Back to the list</button>
+        </div>
+    </form>
 
-    <table>
+    <table class="table table-bordered">
+        <h1>Article</h1>
+
         <tbody>
             <tr>
                 <th>Id</th>
@@ -38,23 +44,17 @@
                 <td>{{ article.status }}</td>
             </tr>
             <tr>
-                <th>Userid</th>
-                <td>{{ article.user.id }}</td>
+                <th>Username</th>
+                <td>{{ article.username.username }}</td>
             </tr>
         </tbody>
     </table>
 
-    <ul>
-        <li>
-            <a href="{{ path('article_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('article_edit', { 'id': article.id }) }}">Edit</a>
-        </li>
-        <li>
+        <form action="{{ path('article_edit', {'id': article.id}) }}">
+            <button class="btn btn-info">Edit</button>
+        </form>
             {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
+                <input class="btn btn-info" type="submit" value="Delete">
             {{ form_end(delete_form) }}
-        </li>
-    </ul>
+
 {% endblock %}

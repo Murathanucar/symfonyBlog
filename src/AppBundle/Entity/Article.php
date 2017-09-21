@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -75,7 +76,19 @@ class Article
      * @ORM\ManyToOne(targetEntity="User", inversedBy="article")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id",onDelete="CASCADE")
      */
-    private $user;
+    private $username;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="article")
+     */
+
+    private $comment;
+
+
+    public function  __construct()
+    {
+        $this->comment = new ArrayCollection();
+    }
 
 
     /**
@@ -258,27 +271,22 @@ class Article
     }
 
     /**
-     * Set userId
-     *
-     * @param integer $user
-     *
-     * @return Article
+     * @return mixed
      */
-    public function setUser($user)
+    public function getUsername()
     {
-        $this->user = $user;
-
-        return $this;
+        return $this->username;
     }
 
     /**
-     * Get userId
-     *
-     * @return int
+     * @param mixed $username
      */
-    public function getUser()
+    public function setUsername($username)
     {
-        return $this->user;
+        $this->username = $username;
     }
+
+
+
 }
 

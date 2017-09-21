@@ -40,7 +40,7 @@ class Comment
      * @ORM\ManyToOne(targetEntity="Member" , inversedBy="comment")
      * @ORM\JoinColumn(name="member_id", referencedColumnName="id")
      */
-    private $member;
+    private $memberId;
 
     /**
      * @var string
@@ -111,13 +111,13 @@ class Comment
     /**
      * Set member
      *
-     * @param integer $member
+     * @param integer $memberId
      *
      * @return Comment
      */
-    public function setMember($member)
+    public function setMemberId($memberId)
     {
-        $this->member = $member;
+        $this->memberId = $memberId;
 
         return $this;
     }
@@ -127,9 +127,9 @@ class Comment
      *
      * @return int
      */
-    public function getMember()
+    public function getMemberId()
     {
-        return $this->member;
+        return $this->memberId;
     }
 
     /**
@@ -146,14 +146,32 @@ class Comment
         return $this;
     }
 
+
+
     /**
      * Get text
      *
      * @return string
      */
+
     public function getText()
     {
         return $this->text;
     }
+
+    /* ekleme yaparken memberId bulunamadı hatası için yazılan fonksiyon. twigdeki member yerine memberId yazdım geçici olarak.
+
+    public function getMemberId()
+    {
+        return $this->member;
+    }
+
+    public function setMemberId($member)
+    {
+        return $this->member = $member;
+    }*/
+
+
 }
+
 

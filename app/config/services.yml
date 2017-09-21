@@ -30,6 +30,10 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    custom_authenticator:
+        class: AppBundle\Security\CustomLoginAuthenticator
+        arguments: ['@doctrine.orm.entity_manager', '@router']
+
     redirect_response:
         class: Symfony\Component\HttpFoundation\RedirectResponse
         arguments: ['/']
